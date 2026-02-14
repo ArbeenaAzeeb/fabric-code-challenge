@@ -7,6 +7,7 @@ import MenuScreen from '../../../screens/menu.screen';
 import { ORIENTATIONS } from '../../../constants/orientation';
 import { enforceOrientation } from '../../../utils/helpers';
 import { testContext } from '../../../context/testContext';
+import { allureStep } from '../../../utils/allurehelper';
 
 for (const orientation of ORIENTATIONS) {
     describe(`Shopping Flow in ${orientation}`, () => {
@@ -19,25 +20,30 @@ for (const orientation of ORIENTATIONS) {
             const products = [Items.backpack, Items.bikeLight];
             const checkoutInfo = { firstName: "Jane", lastName: "Doe", zip: "123456" };
 
-            await LoginScreen.login(Creds.validUser, Creds.password);
+            await allureStep('Login with valid credentials', async () => {
+                await LoginScreen.login(Creds.validUser, Creds.password);
+            });
 
-            // Add multiple products to cart
-            for (const product of products) {
-                await HomeScreen.addProductToCart(product);
-            }
-
-            // Place order
-            await CheckoutScreen.openCart(products.length);
-            await CheckoutScreen.completeCheckout(checkoutInfo.firstName, checkoutInfo.lastName, checkoutInfo.zip);
-            await CheckoutScreen.verifyOrderSuccess();
-
-            // Verify menu options
-            await CheckoutScreen.moveBackToHomeScreen();
-            await MenuScreen.validateMenuItems();
-
-            if (orientation == 'PORTRAIT'){
-                await MenuScreen.logout();
-            }
+            await allureStep('Add multiple products to cart', async () => {
+                for (const product of products) {
+                    await HomeScreen.addProductToCart(product);
+                }
+            });
+            
+            await allureStep('Place an order', async () => {
+                await CheckoutScreen.openCart(products.length);
+                await CheckoutScreen.completeCheckout(checkoutInfo.firstName, checkoutInfo.lastName, checkoutInfo.zip);
+                await CheckoutScreen.verifyOrderSuccess();
+            });
+            
+            await allureStep('Verify menu options and logout', async () => {
+                await CheckoutScreen.moveBackToHomeScreen();
+                if (orientation == 'PORTRAIT'){
+                    await MenuScreen.validateMenuItems();
+                    await MenuScreen.logout();
+                }
+            });
+            
         });
 
     });

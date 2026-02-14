@@ -12,6 +12,7 @@ export class MenuScreen {
     get resetAppStateButton() { return $('~test-RESET APP STATE'); }
 
     async viewMenu() {
+        await enforceOrientation();
         await this.menuButton.click();
         await enforceOrientation();
     }

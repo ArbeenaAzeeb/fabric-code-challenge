@@ -1,4 +1,5 @@
 import { iosCapabilities } from './src/config/capabilities/ios.capabilities'
+import allure from '@wdio/allure-reporter';
 
 export const config: WebdriverIO.Config = {
     //
@@ -125,13 +126,23 @@ export const config: WebdriverIO.Config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
-    reporters: ['spec',['allure', {outputDir: 'allure-results'}]],
+    reporters: [
+      'spec',
+      [
+        'allure',
+        {
+          outputDir: 'allure-results',
+          disableWebdriverStepsReporting: true,
+          disableWebdriverScreenshotsReporting: false
+        }
+      ]
+    ],
 
     // Options to be passed to Mocha.
     // See the full list at http://mochajs.org/
     mochaOpts: {
         ui: 'bdd',
-        timeout: 60000
+        timeout: 180000
     },
 
     //
@@ -233,12 +244,13 @@ export const config: WebdriverIO.Config = {
     //     await driver.launchApp();
     // },
 
-    afterTest: async function (test, context, { passed }) {
-        if (!passed) {
-          await browser.takeScreenshot()
-        }
+    afterTest: async function(test, context, { error, result, duration, passed, retries }) {
+      if (!passed) {
+        const screenshot = await browser.takeScreenshot();
+        // This automatically attaches to Allure report
+        await allure.addAttachment('Screenshot', Buffer.from(screenshot, 'base64'), 'image/png');
       }
-        
+    },
 
     /**
      * Hook that gets executed after the suite has ended

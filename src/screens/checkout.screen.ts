@@ -29,9 +29,11 @@ class CheckoutScreen {
     async fillCheckoutDetails(name1: string, name2: string,code: string) {
         await this.firstName.waitForExist({ timeout: 5000 });
         await this.firstName.setValue(name1)
+        await loginScreen.returnButton.click();
 
         await this.lastName.waitForExist({ timeout: 5000 });
         await this.lastName.setValue(name2);
+        await loginScreen.returnButton.click();
 
         await this.zipCode.waitForExist({ timeout: 5000 });
         await this.zipCode.setValue(code);
@@ -64,6 +66,7 @@ class CheckoutScreen {
     }
 
     async moveBackToHomeScreen(){
+        await ElementHelpers.scrollIfNeeded(this.backToHomeButton);
         await this.backToHomeButton.click();
     }
 
