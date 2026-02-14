@@ -1,4 +1,6 @@
+import { testContext } from "../context/testContext";
 import { ElementHelpers, enforceOrientation } from "../utils/helpers";
+import loginScreen from "./login.screen";
 
 class CheckoutScreen {
     get cartIcon() {
@@ -37,17 +39,17 @@ class CheckoutScreen {
 
     }
 
-    async placeOrder(orientation: string) {
-        await $('~Return').click();
+    async placeOrder() {
+        await loginScreen.returnButton.click();
         await ElementHelpers.scrollIfNeeded(this.continueButton);
         await this.continueButton.waitForExist({ timeout: 5000 });
         await this.continueButton.click();
 
-        await enforceOrientation(orientation);
+        await enforceOrientation();
         await ElementHelpers.scrollIfNeeded(this.finishButton);
-        await enforceOrientation(orientation);
+        await enforceOrientation();
         await this.finishButton.waitForExist({ timeout: 5000 });
-        await enforceOrientation(orientation);
+        await enforceOrientation();
         await this.finishButton.click();
     }
 
@@ -56,10 +58,10 @@ class CheckoutScreen {
         await this.dispatchedMessage.waitForExist({ timeout: 5000 });
     }
 
-    async completeCheckout(firstName: string, lastName: string, zip: string, orientation: string) {
+    async completeCheckout(firstName: string, lastName: string, zip: string) {
         await this.proceedToCheckout();
         await this.fillCheckoutDetails(firstName, lastName, zip);
-        await this.placeOrder(orientation);
+        await this.placeOrder();
     }
 
     async moveBackToHomeScreen(){

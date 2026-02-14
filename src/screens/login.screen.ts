@@ -1,3 +1,4 @@
+import { testContext } from "../context/testContext"
 import { enforceOrientation } from "../utils/helpers"
 
 class LoginScreen {
@@ -6,8 +7,9 @@ class LoginScreen {
     get loginButton() {return $('~test-LOGIN')}
     get lockedOutMessage() {return $('~Sorry, this user has been locked out.')}
     get invalidCredMessage() {return $('~Username and password do not match any user in this service.')}
+    get returnButton() { return $('~Return'); }
   
-    async login(username: string, password: string, orientation: string) {
+    async login(username: string, password: string) {
         await this.usernameInput.waitForDisplayed({
           timeout: 10000,
           timeoutMsg: 'Username input not displayed'
@@ -15,13 +17,13 @@ class LoginScreen {
       
         await this.usernameInput.clearValue()
         await this.usernameInput.setValue(username)
-        await $('~Return').click();
+        await this.returnButton.click();
 
         await this.passwordInput.setValue(password)
-        await $('~Return').click();
+        await this.returnButton.click();
 
         await this.loginButton.click()
-        await enforceOrientation(orientation);
+        await enforceOrientation();
       }
 
       

@@ -1,3 +1,5 @@
+import { testContext } from "../context/testContext";
+
 export class ElementHelpers {
     static async scrollIfNeeded(element: ReturnType<typeof $>, maxAttempts = 20) {
         await element.waitForExist({ timeout: 5000 });
@@ -37,7 +39,8 @@ export class ElementHelpers {
         return element;
     } 
 }
-export async function enforceOrientation(orientation: string) {
+export async function enforceOrientation() {
+    const orientation = testContext.orientation
     const current = await driver.getOrientation();
     if (current !== orientation) {
         await driver.setOrientation(orientation);

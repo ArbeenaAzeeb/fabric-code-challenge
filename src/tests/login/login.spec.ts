@@ -4,21 +4,23 @@ import HomeScreen from '../../screens/home.screen'
 import { ORIENTATIONS } from '../../constants/orientation';
 import MenuScreen from '../../screens/menu.screen';
 import { enforceOrientation } from '../../utils/helpers';
+import { testContext } from '../../context/testContext';
 
 for (const orientation of ORIENTATIONS) {
     describe(`Login Flow in ${orientation}`, () => {
     before(async () => {
-        await enforceOrientation(orientation);
+        testContext.orientation = orientation;
+        await enforceOrientation();
     });
     
     it('should show error for locked out user credentials', async () => {
-        await LoginScreen.login(Creds.lockedUser, Creds.password, orientation);
+        await LoginScreen.login(Creds.lockedUser, Creds.password);
         const error = await LoginScreen.lockedOutMessage.getText();
         expect(error).toBe('Sorry, this user has been locked out.');
     });
 
      it('should login with valid credentials', async () => {
-        await LoginScreen.login(Creds.validUser, Creds.password, orientation)
+        await LoginScreen.login(Creds.validUser, Creds.password)
         await expect(HomeScreen.title).toBeDisplayed()
         if (orientation == 'PORTRAIT'){
             await MenuScreen.logout();

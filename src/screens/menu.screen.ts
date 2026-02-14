@@ -1,5 +1,5 @@
+import { testContext } from "../context/testContext";
 import { ElementHelpers, enforceOrientation } from "../utils/helpers";
-import loginScreen from "./login.screen";
 
 
 export class MenuScreen {
@@ -12,19 +12,15 @@ export class MenuScreen {
     get aboutButton() { return $('~test-ABOUT'); }
     get resetAppStateButton() { return $('~test-RESET APP STATE'); }
 
-    async viewMenu(orientation: string) {
+    async viewMenu() {
         await this.menuButton.click();
-        await enforceOrientation(orientation);
+        await enforceOrientation();
     }
 
     async logout() {
-        await this.viewMenu('PORTRAIT');
+        await this.viewMenu();
         await ElementHelpers.scrollIfNeeded(this.logoutButton);
         await this.logoutButton.click();
-        await loginScreen.usernameInput.waitForDisplayed({
-            timeout: 10000,
-            timeoutMsg: 'Login screen did not appear after logout',
-          });
     }
 
     async isMenuItemVisible(item: ChainablePromiseElement) {
@@ -32,7 +28,7 @@ export class MenuScreen {
         return await item.isDisplayed();
     }
 
-    async validateMenuItems(orientation: string) {
+    async validateMenuItems() {
         const elementsToCheck = [
             this.logoutButton,
             this.allItemsButton,
@@ -43,13 +39,13 @@ export class MenuScreen {
             this.resetAppStateButton,
         ];
 
-        await this.viewMenu(orientation);
+        await this.viewMenu();
         for (const el of elementsToCheck) {
             const visible = await this.isMenuItemVisible(el);
             expect(visible).toBe(true); 
         }
         // Close menu
-        await this.viewMenu(orientation);
+        await this.viewMenu();
     }
     
 }
