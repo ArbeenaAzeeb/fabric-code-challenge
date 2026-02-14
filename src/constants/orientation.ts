@@ -1,1 +1,4 @@
-export const ORIENTATIONS: ('PORTRAIT' | 'LANDSCAPE')[] = ['PORTRAIT', 'LANDSCAPE'];
+export const ORIENTATIONS: ("PORTRAIT" | "LANDSCAPE")[] = [
+  "PORTRAIT",
+  "LANDSCAPE",
+];

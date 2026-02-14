@@ -1,7 +1,7 @@
-
 import { CheckoutUser } from "../models/checkoutUser";
 import { ElementHelpers, enforceOrientation } from "../utils/helpers";
 import loginScreen from "./login.screen";
+import { TIMEOUTS } from "../constants/timeouts";
 
 class CheckoutScreen {
     cartIcon(count: number) {
@@ -18,26 +18,26 @@ class CheckoutScreen {
     get backToHomeButton() {return $('~test-BACK HOME')}
   
     async openCart(length: number) {
-        await this.cartIcon(length).waitForExist({ timeout: 5000 });
+        await this.cartIcon(length).waitForExist();
         await this.cartIcon(length).click();
     }
 
     async proceedToCheckout() {
         await ElementHelpers.scrollIfNeeded(this.checkoutButton);
-        await this.checkoutButton.waitForDisplayed({ timeout: 5000 });
+        await this.checkoutButton.waitForDisplayed({ timeout: TIMEOUTS.medium });
         await this.checkoutButton.click();
     }
 
     async fillCheckoutDetails(firstName: string, lastName: string, zipCode: string) {
-        await this.firstName.waitForExist({ timeout: 5000 });
+        await this.firstName.waitForExist();
         await this.firstName.setValue(firstName)
         await loginScreen.returnButton.click();
 
-        await this.lastName.waitForExist({ timeout: 5000 });
+        await this.lastName.waitForExist();
         await this.lastName.setValue(lastName);
         await loginScreen.returnButton.click();
 
-        await this.zipCode.waitForExist({ timeout: 5000 });
+        await this.zipCode.waitForExist();
         await this.zipCode.setValue(zipCode);
 
     }
@@ -45,18 +45,18 @@ class CheckoutScreen {
     async placeOrder() {
         await loginScreen.returnButton.click();
         await ElementHelpers.scrollIfNeeded(this.continueButton);
-        await this.continueButton.waitForExist({ timeout: 5000 });
+        await this.continueButton.waitForExist();
         await this.continueButton.click();
 
         await enforceOrientation();
         await ElementHelpers.scrollIfNeeded(this.finishButton);
-        await this.finishButton.waitForExist({ timeout: 5000 });
+        await this.finishButton.waitForExist();
         await this.finishButton.click();
     }
 
     async verifyOrderSuccess() {
-        await this.thankYouMessage.waitForExist({ timeout: 5000 });
-        await this.dispatchedMessage.waitForExist({ timeout: 5000 });
+        await this.thankYouMessage.waitForExist();
+        await this.dispatchedMessage.waitForExist();
     }
 
     async completeCheckout(user: CheckoutUser, productCount: number) {
@@ -72,7 +72,6 @@ class CheckoutScreen {
         await ElementHelpers.scrollIfNeeded(this.backToHomeButton);
         await this.backToHomeButton.click();
     }
-
   }
   
   export default new CheckoutScreen()
