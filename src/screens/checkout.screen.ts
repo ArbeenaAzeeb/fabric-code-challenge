@@ -1,4 +1,3 @@
-import { testContext } from "../context/testContext";
 import { ElementHelpers, enforceOrientation } from "../utils/helpers";
 import loginScreen from "./login.screen";
 

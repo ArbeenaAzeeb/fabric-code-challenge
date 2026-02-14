@@ -1,4 +1,3 @@
-import { testContext } from "../context/testContext"
 import { enforceOrientation } from "../utils/helpers"
 
 class LoginScreen {

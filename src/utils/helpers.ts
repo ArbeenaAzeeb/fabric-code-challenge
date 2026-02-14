@@ -4,7 +4,7 @@ export class ElementHelpers {
     static async scrollIfNeeded(element: ReturnType<typeof $>, maxAttempts = 20) {
         await element.waitForExist({ timeout: 5000 });
 
-        const { height, width } = await driver.getWindowRect();
+        const { height } = await driver.getWindowRect();
 
         let isVisible = await element.isDisplayed();
         let attempts = 0;
