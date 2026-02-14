@@ -132,7 +132,7 @@ export const config: WebdriverIO.Config = {
         'allure',
         {
           outputDir: 'allure-results',
-          disableWebdriverStepsReporting: true,
+          disableWebdriverStepsReporting: false,
           disableWebdriverScreenshotsReporting: false
         }
       ]
@@ -247,7 +247,6 @@ export const config: WebdriverIO.Config = {
     afterTest: async function(test, context, { error, result, duration, passed, retries }) {
       if (!passed) {
         const screenshot = await browser.takeScreenshot();
-        // This automatically attaches to Allure report
         await allure.addAttachment('Screenshot', Buffer.from(screenshot, 'base64'), 'image/png');
       }
     },
