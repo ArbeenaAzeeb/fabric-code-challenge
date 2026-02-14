@@ -10,7 +10,7 @@ import { testContext } from '../../../context/testContext';
 import { AllureHelper } from '../../../utils/allurehelper';
 
 for (const orientation of ORIENTATIONS) {
-    describe.skip(`Shopping Flow in ${orientation}`, () => {
+    describe(`Shopping Flow in ${orientation}`, () => {
         before(async () => {
             testContext.orientation = orientation;
             await enforceOrientation();

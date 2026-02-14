@@ -24,7 +24,7 @@ for (const orientation of ORIENTATIONS) {
         
     });
 
-     it.only('should login with valid credentials', async () => {
+     it('should login with valid credentials', async () => {
         AllureHelper.step('Login with valid credentials');
         await LoginScreen.login(Creds.validUser, Creds.password)
         
