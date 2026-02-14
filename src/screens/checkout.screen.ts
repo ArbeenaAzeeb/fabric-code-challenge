@@ -1,9 +1,11 @@
+
+import { CheckoutUser } from "../models/checkoutUser";
 import { ElementHelpers, enforceOrientation } from "../utils/helpers";
 import loginScreen from "./login.screen";
 
 class CheckoutScreen {
-    get cartIcon() {
-        return (length: number) => $(`(//XCUIElementTypeOther[@name="${length}"])[4]`);
+    cartIcon(count: number) {
+        return $(`(//XCUIElementTypeOther[@name="${count}"])[4]`);
     }
     get checkoutButton() {return $('~test-CHECKOUT')}
     get firstName() { return $('~test-First Name')}
@@ -26,17 +28,17 @@ class CheckoutScreen {
         await this.checkoutButton.click();
     }
 
-    async fillCheckoutDetails(name1: string, name2: string,code: string) {
+    async fillCheckoutDetails(firstName: string, lastName: string, zipCode: string) {
         await this.firstName.waitForExist({ timeout: 5000 });
-        await this.firstName.setValue(name1)
+        await this.firstName.setValue(firstName)
         await loginScreen.returnButton.click();
 
         await this.lastName.waitForExist({ timeout: 5000 });
-        await this.lastName.setValue(name2);
+        await this.lastName.setValue(lastName);
         await loginScreen.returnButton.click();
 
         await this.zipCode.waitForExist({ timeout: 5000 });
-        await this.zipCode.setValue(code);
+        await this.zipCode.setValue(zipCode);
 
     }
 
@@ -48,9 +50,7 @@ class CheckoutScreen {
 
         await enforceOrientation();
         await ElementHelpers.scrollIfNeeded(this.finishButton);
-        await enforceOrientation();
         await this.finishButton.waitForExist({ timeout: 5000 });
-        await enforceOrientation();
         await this.finishButton.click();
     }
 
@@ -59,10 +59,13 @@ class CheckoutScreen {
         await this.dispatchedMessage.waitForExist({ timeout: 5000 });
     }
 
-    async completeCheckout(firstName: string, lastName: string, zip: string) {
+    async completeCheckout(user: CheckoutUser, productCount: number) {
+        await this.openCart(productCount);
         await this.proceedToCheckout();
-        await this.fillCheckoutDetails(firstName, lastName, zip);
+        await this.fillCheckoutDetails(user.firstName, user.lastName, user.zip);
         await this.placeOrder();
+        await this.verifyOrderSuccess();
+        await this.moveBackToHomeScreen();
     }
 
     async moveBackToHomeScreen(){

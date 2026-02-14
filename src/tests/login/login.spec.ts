@@ -34,9 +34,7 @@ for (const orientation of ORIENTATIONS) {
         if (orientation == 'PORTRAIT'){
             AllureHelper.step('User logout');
             await MenuScreen.logout();
-        
         }
-        
     })
 })
 }

@@ -1,3 +1,4 @@
+import { testContext } from "../context/testContext";
 import { ElementHelpers, enforceOrientation } from "../utils/helpers";
 
 
@@ -18,9 +19,11 @@ export class MenuScreen {
     }
 
     async logout() {
-        await this.viewMenu();
-        await ElementHelpers.scrollIfNeeded(this.logoutButton);
-        await this.logoutButton.click();
+        if (testContext.orientation == 'PORTRAIT'){
+            await this.viewMenu();
+            await ElementHelpers.scrollIfNeeded(this.logoutButton);
+            await this.logoutButton.click();
+        }    
     }
 
     async isMenuItemVisible(item: ChainablePromiseElement) {
@@ -39,13 +42,15 @@ export class MenuScreen {
             this.resetAppStateButton,
         ];
 
-        await this.viewMenu();
-        for (const el of elementsToCheck) {
-            const visible = await this.isMenuItemVisible(el);
-            expect(visible).toBe(true); 
-        }
-        // Close menu
-        await this.viewMenu();
+        if (testContext.orientation == 'PORTRAIT'){
+            await this.viewMenu();
+            for (const el of elementsToCheck) {
+                const visible = await this.isMenuItemVisible(el);
+                expect(visible).toBe(true); 
+            }
+            // Close menu
+            await this.viewMenu();
+        }       
     }
     
 }

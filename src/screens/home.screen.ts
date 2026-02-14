@@ -16,17 +16,23 @@ export class HomeScreen {
         await product.click();
     }
 
-    async addFirstProductToCart() {
+    async addSelectedProductToCart() {
         await ElementHelpers.scrollIfNeeded(this.addToCartButton);
         await this.addToCartButton.click();
     }
 
     async addProductToCart(item: string) {
         await this.selectProductByName(item);
-        await this.addFirstProductToCart();
+        await this.addSelectedProductToCart();
         await this.backToProducts.click();
 
         await expect(this.title).toBeDisplayed();
+    }
+
+    async addProductsToCart(items: string[]) {
+        for (const item of items) {
+            await this.addProductToCart(item);
+        }
     }
 }
 export default new HomeScreen()

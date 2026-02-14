@@ -1,4 +1,4 @@
-import Creds from '../../../constants/credentials';
+import Creds, { CheckoutUserData } from '../../../constants/credentials';
 import Items from '../../../constants/products';
 import CheckoutScreen from '../../../screens/checkout.screen';
 import LoginScreen from '../../../screens/login.screen';
@@ -18,27 +18,20 @@ for (const orientation of ORIENTATIONS) {
 
         it('should select multiple products and add to cart', async () => {
             const products = [Items.backpack, Items.bikeLight];
-            const checkoutInfo = { firstName: "Jane", lastName: "Doe", zip: "123456" };
+            const checkoutUser = CheckoutUserData.user1();
 
             AllureHelper.step('Login with valid credentials');
             await LoginScreen.login(Creds.validUser, Creds.password);
 
             AllureHelper.step('Add multiple products to cart');
-            for (const product of products) {
-                await HomeScreen.addProductToCart(product);
-            }
+            await HomeScreen.addProductsToCart(products);
             
             AllureHelper.step('Place an order');
-            await CheckoutScreen.openCart(products.length);
-            await CheckoutScreen.completeCheckout(checkoutInfo.firstName, checkoutInfo.lastName, checkoutInfo.zip);
-            await CheckoutScreen.verifyOrderSuccess();
+            await CheckoutScreen.completeCheckout(checkoutUser, products.length)
         
             AllureHelper.step('Verify menu options and logout');
-            await CheckoutScreen.moveBackToHomeScreen();
-            if (orientation == 'PORTRAIT'){
-                await MenuScreen.validateMenuItems();
-                await MenuScreen.logout();
-            }
+            await MenuScreen.validateMenuItems();
+            await MenuScreen.logout();
         });
     });
 }

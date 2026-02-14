@@ -9,21 +9,26 @@ class LoginScreen {
     get returnButton() { return $('~Return'); }
   
     async login(username: string, password: string) {
-        await this.usernameInput.waitForDisplayed({
-          timeout: 10000,
-          timeoutMsg: 'Username input not displayed'
-        })
-      
-        await this.usernameInput.clearValue()
-        await this.usernameInput.setValue(username)
-        await this.returnButton.click();
+      await this.enterUserName(username);
+      await this.enterPassword(password);
+      await this.loginButton.click()
+      await enforceOrientation();
+    }
 
-        await this.passwordInput.setValue(password)
-        await this.returnButton.click();
-
-        await this.loginButton.click()
-        await enforceOrientation();
-      }
+    async enterUserName(username: string) {
+      await this.usernameInput.waitForDisplayed({
+        timeout: 10000,
+        timeoutMsg: 'Username input not displayed'
+      })
+      await this.usernameInput.clearValue()
+      await this.usernameInput.setValue(username)
+      await this.returnButton.click();
+    }
+    
+    async enterPassword(password: string) {
+      await this.passwordInput.setValue(password)
+      await this.returnButton.click();
+    }
 
       
   }
