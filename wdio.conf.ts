@@ -22,6 +22,7 @@ if (runEnv === 'browserstack') {
   hostname = '127.0.0.1';
   services = ['appium'];
 }
+console.log('RUN_ENV:', process.env.RUN_ENV);
 
 export const config: WebdriverIO.Config = {
   user,
