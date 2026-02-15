@@ -13,7 +13,7 @@ let key;
 
 if (runEnv === 'browserstack') {
   capabilities = iosBrowserStack;
-  hostname = 'hub.browserstack.com';
+  // hostname = 'hub.browserstack.com';
   services = ['browserstack'];
   user = process.env.BROWSERSTACK_USERNAME;
   key = process.env.BROWSERSTACK_ACCESS_KEY;
@@ -22,12 +22,10 @@ if (runEnv === 'browserstack') {
   hostname = '127.0.0.1';
   services = ['appium'];
 }
-console.log('RUN_ENV:', process.env.RUN_ENV);
 
 export const config: WebdriverIO.Config = {
   user,
   key,
-  hostname,
     //
     // ====================
     // Runner Configuration
