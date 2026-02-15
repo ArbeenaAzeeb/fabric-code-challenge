@@ -1,7 +1,6 @@
 import { testContext } from "../context/testContext";
 
 export async function enforceOrientation() {
-  if (process.env.RUN_ENV === "browserstack") return;
   const orientation = testContext.orientation;
   console.log(orientation);
   const current = await driver.getOrientation();
