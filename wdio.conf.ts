@@ -3,6 +3,8 @@ import { iosBrowserStack } from './src/config/capabilities/browserstack.capabili
 import allure from '@wdio/allure-reporter';
 import 'dotenv/config';
 import { AllureHelper } from './src/utils/allurehelper';
+import { execSync } from 'child_process';
+import { EmailHelper } from './src/utils/emailHelper';
 
 const runEnv = process.env.RUN_ENV || 'local';
 
@@ -304,10 +306,21 @@ export const config: WebdriverIO.Config = {
       }
     },
 
-    afterSession: async function (config, capabilities, specs) {
+    onComplete: async () => {
+      console.log("🔥 onComplete hook triggered");
+    
+      console.log("📦 Generating Allure report...");
+      execSync("npx allure generate allure-results --clean -o allure-report", {
+        stdio: "inherit",
+      });
+    
+      console.log("📊 Reading test summary...");
       const summary = AllureHelper.getTestSummary();
-      console.log("Test Summary:", summary);
-    },
+      console.log("SUMMARY:", summary);
+    
+      console.log("📧 Sending email...");
+      await EmailHelper.sendTestReport();
+    }
 
     /**
      * Hook that gets executed after the suite has ended
