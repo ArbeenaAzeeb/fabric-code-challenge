@@ -1,7 +1,32 @@
 import { iosCapabilities } from './src/config/capabilities/ios.capabilities'
+import { iosBrowserStack } from './src/config/capabilities/browserstack.capabilities';
 import allure from '@wdio/allure-reporter';
+import 'dotenv/config';
+
+const runEnv = process.env.RUN_ENV || 'local';
+
+let capabilities;
+let hostname;
+let services;
+let user;
+let key;
+
+if (runEnv === 'browserstack') {
+  capabilities = iosBrowserStack;
+  hostname = 'hub.browserstack.com';
+  services = ['browserstack'];
+  user = process.env.BROWSERSTACK_USERNAME;
+  key = process.env.BROWSERSTACK_ACCESS_KEY;
+} else {
+  capabilities = iosCapabilities;
+  hostname = '127.0.0.1';
+  services = ['appium'];
+}
 
 export const config: WebdriverIO.Config = {
+  user,
+  key,
+  hostname,
     //
     // ====================
     // Runner Configuration
@@ -54,7 +79,7 @@ export const config: WebdriverIO.Config = {
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
-    capabilities: iosCapabilities,
+    capabilities,
 
     //
     // ===================
@@ -103,7 +128,7 @@ export const config: WebdriverIO.Config = {
     // Services take over a specific job you don't want to take care of. They enhance
     // your test setup with almost no effort. Unlike plugins, they don't add new
     // commands. Instead, they hook themselves up into the test process.
-    services: ['appium'],
+    services,
 
     // Framework you want to run your specs with.
     // The following are supported: Mocha, Jasmine, and Cucumber

@@ -1,0 +1,30 @@
+name: Mobile Automation Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  ios-tests:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run iOS tests on BrowserStack
+        env:
+          RUN_ENV: browserstack
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          BS_APP_ID: ${{ secrets.BS_APP_ID }}
+        run: npm run test:allure
