@@ -52,7 +52,7 @@ export class EmailHelper {
 
     await transporter.sendMail({
       from: `"Test Automation" <${process.env.EMAIL_USER}>`,
-      to: "arbeena.azeeb@gmail.com", // replace with your recipient
+      to: "arbeena.azeeb@gmail.com",
       subject: "Automated Test Report",
       html,
       attachments,

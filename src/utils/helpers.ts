@@ -1,44 +1,44 @@
 import { testContext } from "../context/testContext";
 
-export class ElementHelpers {
-    static async scrollIfNeeded(element: ReturnType<typeof $>, maxAttempts = 20) {
-        await element.waitForExist({ timeout: 5000 });
+// export class ElementHelpers {
+//     static async scrollIfNeeded(element: ReturnType<typeof $>, maxAttempts = 20) {
+//         await element.waitForExist({ timeout: 5000 });
 
-        const { height } = await driver.getWindowRect();
+//         const { height } = await driver.getWindowRect();
 
-        let isVisible = await element.isDisplayed();
-        let attempts = 0;
+//         let isVisible = await element.isDisplayed();
+//         let attempts = 0;
 
-        while (!isVisible && attempts < maxAttempts) {
-            // Get element location and size
-            const location = await element.getLocation();
-            const size = await element.getSize();
+//         while (!isVisible && attempts < maxAttempts) {
+//             // Get element location and size
+//             const location = await element.getLocation();
+//             const size = await element.getSize();
 
-            // If element bottom is below screen, scroll a small step
-            if (location.y + size.height > height) {
-                await driver.execute('mobile: swipe', {
-                    direction: 'up',
-                    velocity: 200
-                });
-            } 
-            // If element top is above screen, scroll down
-            else if (location.y < 0) {
-                await driver.execute('mobile: swipe', {
-                    direction: 'down',
-                    velocity: 250
-                });
-            }
+//             // If element bottom is below screen, scroll a small step
+//             if (location.y + size.height > height) {
+//                 await driver.execute('mobile: swipe', {
+//                     direction: 'up',
+//                     velocity: 300
+//                 });
+//             } 
+//             // If element top is above screen, scroll down
+//             else if (location.y < 0) {
+//                 await driver.execute('mobile: swipe', {
+//                     direction: 'down',
+//                     velocity: 250
+//                 });
+//             }
 
-            await driver.pause(300);
-            isVisible = await element.isDisplayed();
-            attempts++;
-        }
+//             await driver.pause(300);
+//             isVisible = await element.isDisplayed();
+//             attempts++;
+//         }
 
-        if (!isVisible) throw new Error('Element not visible after scrolling');
+//         if (!isVisible) throw new Error('Element not visible after scrolling');
 
-        return element;
-    } 
-}
+//         return element;
+//     } 
+// }
 
 export async function enforceOrientation() {
   const orientation = testContext.orientation;
@@ -60,6 +60,7 @@ export async function enforceOrientation() {
 //       const location = await element.getLocation();
 //       const size = await element.getSize();
 //       const { height } = await driver.getWindowRect();
+//       console.log("check: ", location, size,height)
 //       if (location.y + size.height > height) {
 //         // scroll UP (content moves up, finger moves up)
 //         await driver.execute('mobile: dragFromToForDuration', {
@@ -98,3 +99,41 @@ export async function enforceOrientation() {
 //     return element;
 //   }
 // }
+
+export class ElementHelpers {
+  static async scrollIfNeeded(
+    element: ChainablePromiseElement,
+    maxAttempts = 20
+  ) {
+    await element.waitForExist({ timeout: 5000 });
+
+    const { width, height } = await driver.getWindowRect();
+
+    const startX = Math.floor(width / 2);
+    const startY = Math.floor(height * 0.75); // bottom
+    const endY   = Math.floor(height * 0.25); // top
+
+    let attempts = 0;
+
+    while (attempts < maxAttempts) {
+      if (await element.isDisplayed()) {
+        return element;
+      }
+
+      console.log(`Scroll attempt ${attempts + 1}`);
+
+      await driver.execute("mobile: dragFromToForDuration", {
+        fromX: startX,
+        fromY: startY,
+        toX: startX,
+        toY: endY,
+        duration: 0.4, 
+      });
+
+      await driver.pause(600);
+      attempts++;
+    }
+
+    throw new Error("Element not visible after scrolling");
+  }
+}
