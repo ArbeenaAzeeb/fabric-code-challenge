@@ -12,8 +12,8 @@ export class AllureHelper {
   }
 
   static getTestSummary() {
-    const resultsDir = path.join(__dirname, "../allure-results");
-
+    const resultsDir = path.join(__dirname, "../../allure-results");
+    
     if (!fs.existsSync(resultsDir)) {
       return { total: 0, passed: 0, failed: 0, failedTests: [] };
     }

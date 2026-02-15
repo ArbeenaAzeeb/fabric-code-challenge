@@ -39,6 +39,7 @@ class CheckoutScreen {
 
         await this.zipCode.waitForExist();
         await this.zipCode.setValue(zipCode);
+        await loginScreen.returnButton.click();
 
     }
 
