@@ -13,17 +13,18 @@
 //       networkLogs: true
 //     }
 //   }];
-  
-  export const iosBrowserStack = (orientation: 'PORTRAIT' | 'LANDSCAPE') => [{
+
+
+export const iosBrowserStack = (orientation: 'PORTRAIT' | 'LANDSCAPE') => [{
     platformName: 'iOS',
     'appium:deviceName': 'iPhone SE 2022',
     'appium:platformVersion': '15',
     'appium:automationName': 'XCUITest',
     'appium:app': process.env.BS_APP_ID,
-    'appium:deviceOrientation': orientation,  // ✅ set orientation here
+    'appium:deviceOrientation': orientation,
     'bstack:options': {
       projectName: 'Fabric Code Challenge',
-      buildName: `Build-${process.env.GITHUB_RUN_NUMBER || 'local'}`,
+      buildName: `Build-${process.env.GITHUB_RUN_NUMBER || 'local'}-${orientation}`,
       sessionName: `iOS Appium Tests - ${orientation}`,
       debug: true,
       networkLogs: true
