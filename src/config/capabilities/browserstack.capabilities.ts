@@ -1,7 +1,7 @@
 export const iosBrowserStack = [{
     platformName: 'iOS',
     'appium:deviceName': 'iPhone SE (3rd generation)',
-    'appium:platformVersion': '17',
+    'appium:platformVersion': '16',
     'appium:automationName': 'XCUITest',
     'appium:app': process.env.BS_APP_ID,
   
