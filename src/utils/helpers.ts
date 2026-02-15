@@ -41,7 +41,12 @@ export class ElementHelpers {
         });
       }
 
-      await driver.releaseActions();
+      // Force pointer release, ignore 404 / unsupported on BrowserStack
+      try {
+        await driver.releaseActions();
+      } catch (err) {
+        // ignore WebDriver DELETE /actions failure
+      }
 
       await driver.pause(1000);
       attempts++;
