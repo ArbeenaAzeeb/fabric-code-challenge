@@ -22,53 +22,23 @@ export class ElementHelpers {
       const size = await element.getSize();
       const { height } = await driver.getWindowRect();
       if (location.y + size.height > height) {
-        await driver.performActions([
-          {
-            type: "pointer",
-            id: "finger1",
-            parameters: { pointerType: "touch" },
-            actions: [
-              { type: "pointerMove", duration: 0, x: 350, y: 340 },
-              { type: "pointerDown", button: 0 },
-              { type: "pause", duration: 10 },
-              {
-                type: "pointerMove",
-                duration: 200,
-                origin: "viewport",
-                x: 350,
-                y: 265,
-              },
-              { type: "pointerUp", button: 0 },
-            ],
-          },
-        ]);
+        // scroll UP (content moves up, finger moves up)
+        await driver.execute('mobile: dragFromToForDuration', {
+          fromX: 350,
+          fromY: 340,
+          toX: 350,
+          toY: 265,
+          duration: 0.2
+        });
       } else if (location.y < 0) {
-        await driver.performActions([
-          {
-            type: "pointer",
-            id: "finger2",
-            parameters: { pointerType: "touch" },
-            actions: [
-              {
-                type: "pointerMove",
-                duration: 0,
-                x: 350,
-                y: 270,
-                origin: "viewport",
-              },
-              { type: "pointerDown", button: 0 },
-              { type: "pause", duration: 10 },
-              {
-                type: "pointerMove",
-                duration: 200,
-                x: 350,
-                y: 340,
-                origin: "viewport",
-              },
-              { type: "pointerUp", button: 0 },
-            ],
-          },
-        ]);
+        // scroll DOWN (content moves down, finger moves down)
+        await driver.execute('mobile: dragFromToForDuration', {
+          fromX: 350,
+          fromY: 270,
+          toX: 350,
+          toY: 340,
+          duration: 0.2
+        });
       }
 
       await driver.releaseActions();
