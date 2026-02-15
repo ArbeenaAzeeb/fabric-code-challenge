@@ -2,6 +2,7 @@ import { iosCapabilities } from './src/config/capabilities/ios.capabilities'
 import { iosBrowserStack } from './src/config/capabilities/browserstack.capabilities';
 import allure from '@wdio/allure-reporter';
 import 'dotenv/config';
+import { AllureHelper } from './src/utils/allurehelper';
 
 const runEnv = process.env.RUN_ENV || 'local';
 
@@ -301,6 +302,11 @@ export const config: WebdriverIO.Config = {
         const screenshot = await browser.takeScreenshot();
         await allure.addAttachment('Screenshot', Buffer.from(screenshot, 'base64'), 'image/png');
       }
+    },
+
+    afterSession: async function (config, capabilities, specs) {
+      const summary = AllureHelper.getTestSummary();
+      console.log("Test Summary:", summary);
     },
 
     /**

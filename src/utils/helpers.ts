@@ -26,7 +26,7 @@ export class ElementHelpers {
           fromX: 350,
           fromY: 340,
           toX: 350,
-          toY: 285,
+          toY: 290,
           duration: 0.2
         });
       } else if (location.y < 0) {
