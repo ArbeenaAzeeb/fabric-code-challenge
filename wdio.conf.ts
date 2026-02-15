@@ -10,22 +10,32 @@ let hostname;
 let services;
 let user;
 let key;
+let port;
+let protocol;
 
 if (runEnv === 'browserstack') {
   capabilities = iosBrowserStack;
-  // hostname = 'hub.browserstack.com';
   services = ['browserstack'];
   user = process.env.BROWSERSTACK_USERNAME;
   key = process.env.BROWSERSTACK_ACCESS_KEY;
+  hostname = 'hub-cloud.browserstack.com';
+  port = 443;
+  protocol = 'https';
 } else {
   capabilities = iosCapabilities;
   hostname = '127.0.0.1';
   services = ['appium'];
+  port = 4723;
+  protocol = 'http';
 }
 
 export const config: WebdriverIO.Config = {
-  user,
-  key,
+    user,
+    key,
+    hostname,
+    protocol,
+    path: '/wd/hub',
+    port,
     //
     // ====================
     // Runner Configuration
@@ -34,7 +44,6 @@ export const config: WebdriverIO.Config = {
     runner: 'local',
     tsConfigPath: './tsconfig.json',
     
-    port: 4723,
     //
     // ==================
     // Specify Test Files
