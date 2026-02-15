@@ -169,6 +169,13 @@ export const config: WebdriverIO.Config = {
         timeout: 180000
     },
 
+    beforeSession: function () {
+      console.log('RUN_ENV:', process.env.RUN_ENV)
+      console.log('BS user exists:', !!process.env.BROWSERSTACK_USERNAME)
+      console.log('BS key exists:', !!process.env.BROWSERSTACK_ACCESS_KEY)
+      console.log('BS app exists:', !!process.env.BS_APP_ID)
+    }
+    
     //
     // =====
     // Hooks
