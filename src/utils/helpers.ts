@@ -2,7 +2,6 @@ import { testContext } from "../context/testContext";
 
 export async function enforceOrientation() {
   const orientation = testContext.orientation;
-  console.log(orientation);
   const current = await driver.getOrientation();
   if (current !== orientation) {
     await driver.setOrientation(orientation);
@@ -27,7 +26,7 @@ export class ElementHelpers {
           fromX: 350,
           fromY: 340,
           toX: 350,
-          toY: 250,
+          toY: 270,
           duration: 0.2
         });
       } else if (location.y < 0) {
