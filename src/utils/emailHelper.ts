@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import * as nodemailer from "nodemailer";
 import * as path from "path";
 import { AllureHelper } from "../utils/allurehelper";
 
