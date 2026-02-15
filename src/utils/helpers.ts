@@ -36,7 +36,7 @@ export class ElementHelpers {
                 duration: 200,
                 origin: "viewport",
                 x: 350,
-                y: 270,
+                y: 265,
               },
               { type: "pointerUp", button: 0 },
             ],
