@@ -13,8 +13,27 @@ let key;
 let port;
 let protocol;
 
+// if (runEnv === 'browserstack') {
+//   capabilities = iosBrowserStack;
+//   services = ['browserstack'];
+//   user = process.env.BROWSERSTACK_USERNAME;
+//   key = process.env.BROWSERSTACK_ACCESS_KEY;
+//   hostname = 'hub-cloud.browserstack.com';
+//   port = 443;
+//   protocol = 'https';
+// } else {
+//   capabilities = iosCapabilities;
+//   hostname = '127.0.0.1';
+//   services = ['appium'];
+//   port = 4723;
+//   protocol = 'http';
+// }
+
 if (runEnv === 'browserstack') {
-  capabilities = iosBrowserStack;
+  // Generate one session for PORTRAIT and one for LANDSCAPE
+  const orientations: ('PORTRAIT' | 'LANDSCAPE')[] = ['PORTRAIT', 'LANDSCAPE'];
+  capabilities = orientations.flatMap(o => iosBrowserStack(o));
+
   services = ['browserstack'];
   user = process.env.BROWSERSTACK_USERNAME;
   key = process.env.BROWSERSTACK_ACCESS_KEY;
@@ -22,9 +41,9 @@ if (runEnv === 'browserstack') {
   port = 443;
   protocol = 'https';
 } else {
-  capabilities = iosCapabilities;
-  hostname = '127.0.0.1';
+  capabilities = iosCapabilities; // single session for local
   services = ['appium'];
+  hostname = '127.0.0.1';
   port = 4723;
   protocol = 'http';
 }
