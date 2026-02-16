@@ -1,7 +1,6 @@
 import AllureReporter from "@wdio/allure-reporter";
 import * as fs from "fs";
 import * as path from "path";
-import * as archiver from "archiver";
 
 export class AllureHelper {
   static step(name: string) {

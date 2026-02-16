@@ -5,7 +5,6 @@ import { AllureHelper } from "../utils/allurehelper";
 export class EmailHelper {
   static async sendTestReport() {
     const summary = AllureHelper.getTestSummary();
-    console.log(summary)
 
     if (summary.total === 0) {
       console.log("No test results found to send.");

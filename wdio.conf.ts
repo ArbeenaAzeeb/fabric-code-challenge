@@ -333,8 +333,6 @@ export const config: WebdriverIO.Config = {
     },
 
     onComplete: async () => {
-      console.log("🔥 onComplete hook triggered");
-    
       console.log("📦 Generating Allure report...");
       execSync("npx allure generate allure-results --clean -o allure-report", {
         stdio: "inherit",
