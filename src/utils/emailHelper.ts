@@ -1,6 +1,5 @@
 import * as nodemailer from "nodemailer";
 import * as path from "path";
-import * as fs from "fs";
 import { AllureHelper } from "../utils/allurehelper";
 
 export class EmailHelper {
@@ -12,7 +11,8 @@ export class EmailHelper {
       console.log("No test results found to send.");
       return;
     }
-
+console.log(process.env.USER_EMAIL)
+console.log(process.env.USER_PASS)
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
