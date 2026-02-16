@@ -1,8 +1,8 @@
 import { CheckoutUser } from "../models/checkoutUser";
 
 const Creds = {
-  validUser: "standard_userr",
-  lockedUser: "locked_out_userr",
+  validUser: "standard_user",
+  lockedUser: "locked_out_user",
   password: "secret_sauce",
 };
 
