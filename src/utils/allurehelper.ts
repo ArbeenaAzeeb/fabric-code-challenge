@@ -13,7 +13,7 @@ export class AllureHelper {
 
   static getTestSummary() {
     const resultsDir = path.join(__dirname, "../../allure-results");
-    
+
     if (!fs.existsSync(resultsDir)) {
       return { total: 0, passed: 0, failed: 0, failedTests: [] };
     }
@@ -32,15 +32,16 @@ export class AllureHelper {
         total++;
         if (data.status === "passed") {
           passed++;
-        }
-        else if (data.status === "skipped") {
-            skipped++;
-          }
-         else {
+        } else if (data.status === "skipped") {
+          skipped++;
+        } else {
           failed++;
           failedTests.push({
             name: data.name,
-            screenshot: path.join("allure-results", `${data.name.replace(/[^a-zA-Z0-9-_]/g, "_")}.png`),
+            screenshot: path.join(
+              "allure-results",
+              `${data.name.replace(/[^a-zA-Z0-9-_]/g, "_")}.png`
+            ),
           });
         }
       }

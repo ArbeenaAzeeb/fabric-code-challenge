@@ -14,14 +14,14 @@ for (const orientation of ORIENTATIONS) {
       await enforceOrientation();
     });
 
-    // it("should show error for locked out user credentials", async () => {
-    //   AllureHelper.step("Login with locked out credentials");
-    //   await LoginScreen.login(Creds.lockedUser, Creds.password);
+    it("should show error for locked out user credentials", async () => {
+      AllureHelper.step("Login with locked out credentials");
+      await LoginScreen.login(Creds.lockedUser, Creds.password);
 
-    //   AllureHelper.step("Verify error message for locked user");
-    //   const error = await LoginScreen.lockedOutMessage.getText();
-    //   expect(error).toBe("Sorry, this user has been locked out.");
-    // });
+      AllureHelper.step("Verify error message for locked user");
+      const error = await LoginScreen.lockedOutMessage.getText();
+      expect(error).toBe("Sorry, this user has been locked out.");
+    });
 
     it("should login with valid credentials", async () => {
       AllureHelper.step("Login with valid credentials");

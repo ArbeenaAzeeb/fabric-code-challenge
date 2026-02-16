@@ -10,14 +10,12 @@ export class EmailHelper {
       console.log("No test results found to send.");
       return;
     }
-console.log("email: ",process.env.USER_EMAIL);
-console.log("pass: ",process.env.USER_PASS);
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.USER_EMAIL,      
-        pass: process.env.USER_PASS      
-      }
+        user: process.env.USER_EMAIL,
+        pass: process.env.USER_PASS,
+      },
     });
 
     const html = `
@@ -30,7 +28,7 @@ console.log("pass: ",process.env.USER_PASS);
       ${
         summary.failedTests.length > 0
           ? `
-            <h3>❌ Failed Tests</h3>
+            <h3>❌ Details of Failed Tests</h3>
             ${summary.failedTests
               .map(
                 (f) => `
@@ -45,19 +43,18 @@ console.log("pass: ",process.env.USER_PASS);
       }
     `;
 
-    // Attach screenshots
-    const attachments = summary.failedTests.map(f => ({
-        filename: path.basename(f.screenshot),      
-        path: f.screenshot,                        
-        cid: path.basename(f.screenshot),     
-      }));
+    const attachments = summary.failedTests.map((f) => ({
+      filename: path.basename(f.screenshot),
+      path: f.screenshot,
+      cid: path.basename(f.screenshot),
+    }));
 
     await transporter.sendMail({
       from: `"Test Automation" <${process.env.EMAIL_USER}>`,
       to: process.env.USER_EMAIL,
-      subject: "Automation Test Report",
+      subject: "SwagLabs Automation Test Report",
       html,
-      attachments
+      attachments,
     });
 
     console.log("Test report emailed successfully!");

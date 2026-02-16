@@ -1,4 +1,4 @@
 export const ORIENTATIONS: ("PORTRAIT" | "LANDSCAPE")[] = [
-//   "PORTRAIT",
+  "PORTRAIT",
   "LANDSCAPE",
 ];
