@@ -293,7 +293,7 @@ export async function enforceOrientation() {
 export class ElementHelpers {
   static async scrollIfNeeded(
     element: ChainablePromiseElement,
-    maxAttempts = 15
+    maxAttempts = 12
   ) {
     await element.waitForExist({ timeout: 5000 });
 
@@ -304,10 +304,10 @@ export class ElementHelpers {
     let scrollDirection: 'up' | 'down' | null = null;
 
     while (attempts < maxAttempts) {
-      // 🔑 Let UI settle (critical for BS)
-      await driver.pause(isBrowserStack ? 700 : 300);
+      // Let UI settle (critical on BS)
+      await driver.pause(isBrowserStack ? 600 : 300);
 
-      // ✅ Hard stop as soon as element is visible
+      // Hard stop as soon as visible
       if (await element.isDisplayed()) {
         return element;
       }
@@ -315,47 +315,27 @@ export class ElementHelpers {
       const location = await element.getLocation();
       const size = await element.getSize();
 
-      // 🔑 Decide direction ONCE (no oscillation)
+      // Decide direction ONCE
       if (!scrollDirection) {
         if (location.y + size.height > height) {
           scrollDirection = 'up';
         } else if (location.y < 0) {
           scrollDirection = 'down';
         } else {
-          return element; // already in viewport
+          return element;
         }
       }
 
       if (isBrowserStack) {
-        /* ============================
-           PRIMARY SCROLL (velocity 300)
-        ============================= */
+        // 🔑 ONE swipe only — no correction, no brake
         await driver.execute('mobile: swipe', {
           direction: scrollDirection,
           velocity: 300
         });
 
-        /* ============================
-           MOMENTUM BRAKE (KEY TRICK)
-           Cancels inertial overshoot
-        ============================= */
-        await driver.execute('mobile: swipe', {
-          direction: scrollDirection === 'up' ? 'down' : 'up',
-          velocity: 40
-        });
-
-        /* ============================
-           EARLY EXIT (mid-settle)
-        ============================= */
+        // Short settle only (no momentum chaining)
         await driver.pause(120);
-
-        if (await element.isDisplayed()) {
-          return element;
-        }
       } else {
-        /* ============================
-           LOCAL / SIMULATOR SCROLL
-        ============================= */
         await driver.execute('mobile: dragFromToForDuration', {
           fromX: Math.floor(width * 0.5),
           fromY:
@@ -370,10 +350,6 @@ export class ElementHelpers {
           duration: 0.2
         });
       }
-
-      try {
-        await driver.releaseActions();
-      } catch (_) {}
 
       attempts++;
     }
