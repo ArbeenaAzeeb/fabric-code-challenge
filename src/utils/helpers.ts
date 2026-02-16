@@ -103,37 +103,61 @@ export async function enforceOrientation() {
 export class ElementHelpers {
   static async scrollIfNeeded(
     element: ChainablePromiseElement,
-    maxAttempts = 20
+    maxAttempts = 30
   ) {
     await element.waitForExist({ timeout: 5000 });
 
+    let attempts = 0;
+    const isBrowserStack = process.env.RUN_ENV === 'browserstack';
+
     const { width, height } = await driver.getWindowRect();
 
-    const startX = Math.floor(width / 2);
-    const startY = Math.floor(height * 0.75); // bottom
-    const endY   = Math.floor(height * 0.25); // top
+    while (!(await element.isDisplayed()) && attempts < maxAttempts) {
+      const location = await element.getLocation();
+      const size = await element.getSize();
 
-    let attempts = 0;
+      console.log('check:', location, size, height);
 
-    while (attempts < maxAttempts) {
-      if (await element.isDisplayed()) {
-        return element;
+      const needsScrollUp = location.y + size.height > height;
+      const needsScrollDown = location.y < 0;
+
+      if (needsScrollUp || needsScrollDown) {
+        if (isBrowserStack) {
+          // 🔥 BrowserStack-safe swipe (orientation aware)
+          await driver.execute('mobile: swipe', {
+            direction: needsScrollUp ? 'up' : 'down',
+            velocity: 300
+          });
+        } else {
+          // ✅ Local / Simulator precise coordinate swipe
+          await driver.execute('mobile: dragFromToForDuration', {
+            fromX: Math.floor(width * 0.5),
+            fromY: needsScrollUp
+              ? Math.floor(height * 0.7)
+              : Math.floor(height * 0.3),
+            toX: Math.floor(width * 0.5),
+            toY: needsScrollUp
+              ? Math.floor(height * 0.6)
+              : Math.floor(height * 0.4),
+            duration: 0.2
+          });
+        }
       }
 
-      console.log(`Scroll attempt ${attempts + 1}`);
+      // Force pointer release (BrowserStack may throw 404)
+      try {
+        await driver.releaseActions();
+      } catch (_) {}
 
-      await driver.execute("mobile: dragFromToForDuration", {
-        fromX: startX,
-        fromY: startY,
-        toX: startX,
-        toY: endY,
-        duration: 0.4, 
-      });
-
-      await driver.pause(600);
+      await driver.pause(700);
       attempts++;
     }
 
-    throw new Error("Element not visible after scrolling");
+    if (!(await element.isDisplayed())) {
+      throw new Error('Element not found after scrolling');
+    }
+
+    return element;
   }
 }
+
