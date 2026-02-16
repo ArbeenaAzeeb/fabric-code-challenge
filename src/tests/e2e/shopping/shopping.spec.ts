@@ -17,7 +17,7 @@ for (const orientation of ORIENTATIONS) {
     });
 
     it("should select multiple products and add to cart", async () => {
-      const products = [Items.backpack, Items.bikeLight];
+      const products = [Items.tShirt, Items.jacket];
       const checkoutUser = CheckoutUserData.user1();
 
       AllureHelper.step("Login with valid credentials");
