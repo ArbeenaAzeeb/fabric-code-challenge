@@ -5,6 +5,8 @@ import 'dotenv/config';
 import { AllureHelper } from './src/utils/allurehelper';
 import { execSync } from 'child_process';
 import { EmailHelper } from './src/utils/emailHelper';
+import path = require('path');
+import * as fs from "fs";
 
 const runEnv = process.env.RUN_ENV || 'local';
 
@@ -50,7 +52,6 @@ if (runEnv === 'browserstack') {
 //   port = 4723;
 //   protocol = 'http';
 // }
-
 export const config: WebdriverIO.Config = {
     user,
     key,
@@ -299,10 +300,35 @@ export const config: WebdriverIO.Config = {
     //     await driver.launchApp();
     // },
 
+    // afterTest: async function(test, context, { error, result, duration, passed, retries }) {
+    //   if (!passed) {
+    //     const screenshot = await browser.takeScreenshot();
+    //     await allure.addAttachment('Screenshot', Buffer.from(screenshot, 'base64'), 'image/png');
+    //   }
+    // },
     afterTest: async function(test, context, { error, result, duration, passed, retries }) {
       if (!passed) {
         const screenshot = await browser.takeScreenshot();
-        await allure.addAttachment('Screenshot', Buffer.from(screenshot, 'base64'), 'image/png');
+        const allureResultsDir = path.join("allure-results");
+    
+        // Ensure the directory exists
+        if (!fs.existsSync(allureResultsDir)) {
+          fs.mkdirSync(allureResultsDir, { recursive: true });
+        }
+    
+        // Use UID or title as filename (make it safe for filesystem)
+        const safeName = test.title.replace(/[^a-zA-Z0-9-_]/g, "_");
+        const filePath = path.join(allureResultsDir, `${safeName}.png`);
+    
+        // Save screenshot to disk
+        fs.writeFileSync(filePath, Buffer.from(screenshot, "base64"));
+    
+        // Attach to Allure using the saved file
+        await allure.addAttachment(
+          "Screenshot",
+          fs.readFileSync(filePath),
+          "image/png"
+        );
       }
     },
 
@@ -313,12 +339,11 @@ export const config: WebdriverIO.Config = {
       execSync("npx allure generate allure-results --clean -o allure-report", {
         stdio: "inherit",
       });
-    
-      console.log("📊 Reading test summary...");
+      console.log("Reading test summary...");
       const summary = AllureHelper.getTestSummary();
       console.log("SUMMARY:", summary);
     
-      console.log("📧 Sending email...");
+      console.log("Sending email...");
       await EmailHelper.sendTestReport();
     }
 

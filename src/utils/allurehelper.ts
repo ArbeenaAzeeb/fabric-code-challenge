@@ -1,6 +1,7 @@
 import AllureReporter from "@wdio/allure-reporter";
 import * as fs from "fs";
 import * as path from "path";
+import * as archiver from "archiver";
 
 export class AllureHelper {
   static step(name: string) {
@@ -22,6 +23,7 @@ export class AllureHelper {
     let total = 0;
     let passed = 0;
     let failed = 0;
+    let skipped = 0;
     const failedTests: { name: string; screenshot: string }[] = [];
 
     files.forEach((file: string) => {
@@ -31,16 +33,20 @@ export class AllureHelper {
         total++;
         if (data.status === "passed") {
           passed++;
-        } else {
+        }
+        else if (data.status === "skipped") {
+            skipped++;
+          }
+         else {
           failed++;
           failedTests.push({
             name: data.name,
-            screenshot: path.join("allure-report/data/test-cases", `${data.uuid}.png`),
+            screenshot: path.join("allure-results", `${data.name.replace(/[^a-zA-Z0-9-_]/g, "_")}.png`),
           });
         }
       }
     });
 
-    return { total, passed, failed, failedTests };
+    return { total, passed, failed, skipped, failedTests };
   }
 }
