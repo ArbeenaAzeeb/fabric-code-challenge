@@ -224,10 +224,76 @@ export async function enforceOrientation() {
 //   }
 // }
 
+// export class ElementHelpers {
+//   static async scrollIfNeeded(
+//     element: ChainablePromiseElement,
+//     maxAttempts = 20
+//   ) {
+//     await element.waitForExist({ timeout: 5000 });
+
+//     const isBrowserStack = process.env.RUN_ENV === 'browserstack';
+//     const { width, height } = await driver.getWindowRect();
+
+//     let attempts = 0;
+//     let scrollDirection: 'up' | 'down' | null = null;
+
+//     while (attempts < maxAttempts) {
+//       await driver.pause(isBrowserStack ? 900 : 300);
+
+//       if (await element.isDisplayed()) {
+//         return element; // ✅ stop immediately
+//       }
+
+//       const { y } = await element.getLocation();
+//       const { height: elHeight } = await element.getSize();
+
+//       // 🔑 Decide direction ONCE
+//       if (!scrollDirection) {
+//         if (y + elHeight > height) {
+//           scrollDirection = 'up';
+//         } else if (y < 0) {
+//           scrollDirection = 'down';
+//         } else {
+//           return element; // in viewport
+//         }
+//       }
+
+//       if (isBrowserStack) {
+//         await driver.execute('mobile: swipe', {
+//           direction: scrollDirection,
+//           velocity: 300
+//         });
+
+//         await driver.pause(150); // kill momentum
+//       } else {
+//         await driver.execute('mobile: dragFromToForDuration', {
+//           fromX: Math.floor(width * 0.5),
+//           fromY: scrollDirection === 'up'
+//             ? Math.floor(height * 0.7)
+//             : Math.floor(height * 0.3),
+//           toX: Math.floor(width * 0.5),
+//           toY: scrollDirection === 'up'
+//             ? Math.floor(height * 0.6)
+//             : Math.floor(height * 0.4),
+//           duration: 0.2
+//         });
+//       }
+
+//       try {
+//         await driver.releaseActions();
+//       } catch (_) {}
+
+//       attempts++;
+//     }
+
+//     throw new Error('Element not found after scrolling');
+//   }
+// }
+
 export class ElementHelpers {
   static async scrollIfNeeded(
     element: ChainablePromiseElement,
-    maxAttempts = 20
+    maxAttempts = 15
   ) {
     await element.waitForExist({ timeout: 5000 });
 
@@ -238,43 +304,69 @@ export class ElementHelpers {
     let scrollDirection: 'up' | 'down' | null = null;
 
     while (attempts < maxAttempts) {
-      await driver.pause(isBrowserStack ? 900 : 300);
+      // 🔑 Let UI settle (critical for BS)
+      await driver.pause(isBrowserStack ? 700 : 300);
 
+      // ✅ Hard stop as soon as element is visible
       if (await element.isDisplayed()) {
-        return element; // ✅ stop immediately
+        return element;
       }
 
-      const { y } = await element.getLocation();
-      const { height: elHeight } = await element.getSize();
+      const location = await element.getLocation();
+      const size = await element.getSize();
 
-      // 🔑 Decide direction ONCE
+      // 🔑 Decide direction ONCE (no oscillation)
       if (!scrollDirection) {
-        if (y + elHeight > height) {
+        if (location.y + size.height > height) {
           scrollDirection = 'up';
-        } else if (y < 0) {
+        } else if (location.y < 0) {
           scrollDirection = 'down';
         } else {
-          return element; // in viewport
+          return element; // already in viewport
         }
       }
 
       if (isBrowserStack) {
+        /* ============================
+           PRIMARY SCROLL (velocity 300)
+        ============================= */
         await driver.execute('mobile: swipe', {
           direction: scrollDirection,
           velocity: 300
         });
 
-        await driver.pause(150); // kill momentum
+        /* ============================
+           MOMENTUM BRAKE (KEY TRICK)
+           Cancels inertial overshoot
+        ============================= */
+        await driver.execute('mobile: swipe', {
+          direction: scrollDirection === 'up' ? 'down' : 'up',
+          velocity: 40
+        });
+
+        /* ============================
+           EARLY EXIT (mid-settle)
+        ============================= */
+        await driver.pause(120);
+
+        if (await element.isDisplayed()) {
+          return element;
+        }
       } else {
+        /* ============================
+           LOCAL / SIMULATOR SCROLL
+        ============================= */
         await driver.execute('mobile: dragFromToForDuration', {
           fromX: Math.floor(width * 0.5),
-          fromY: scrollDirection === 'up'
-            ? Math.floor(height * 0.7)
-            : Math.floor(height * 0.3),
+          fromY:
+            scrollDirection === 'up'
+              ? Math.floor(height * 0.7)
+              : Math.floor(height * 0.3),
           toX: Math.floor(width * 0.5),
-          toY: scrollDirection === 'up'
-            ? Math.floor(height * 0.6)
-            : Math.floor(height * 0.4),
+          toY:
+            scrollDirection === 'up'
+              ? Math.floor(height * 0.6)
+              : Math.floor(height * 0.4),
           duration: 0.2
         });
       }
@@ -289,4 +381,5 @@ export class ElementHelpers {
     throw new Error('Element not found after scrolling');
   }
 }
+
 
