@@ -10,8 +10,8 @@ export class EmailHelper {
       console.log("No test results found to send.");
       return;
     }
-console.log("email: ",process.env.USER_EMAIL)
-console.log("pass: ",process.env.USER_PASS)
+console.log("email: ",process.env.USER_EMAIL);
+console.log("pass: ",process.env.USER_PASS);
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
