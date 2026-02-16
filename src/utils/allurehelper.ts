@@ -23,7 +23,8 @@ export class AllureHelper {
     let passed = 0;
     let failed = 0;
     let skipped = 0;
-    const failedTests: { name: string; screenshot: string }[] = [];
+    const failedTests: { name: string; screenshot: string; logs: string }[] =
+      [];
 
     files.forEach((file: string) => {
       if (file.endsWith("-result.json")) {
@@ -40,7 +41,11 @@ export class AllureHelper {
             name: data.name,
             screenshot: path.join(
               "allure-results",
-              `${data.name.replace(/[^a-zA-Z0-9-_]/g, "_")}.png`
+              `${this.sanitizeName(data.name)}.png`
+            ),
+            logs: path.join(
+              "logs",
+              `${this.sanitizeName(data.name)}.txt`
             ),
           });
         }
@@ -49,4 +54,10 @@ export class AllureHelper {
 
     return { total, passed, failed, skipped, failedTests };
   }
+
+  static sanitizeName(name: string): string {
+    return name.replace(/[^a-zA-Z0-9-_]/g, "_");
+  }
 }
+
+export default AllureHelper

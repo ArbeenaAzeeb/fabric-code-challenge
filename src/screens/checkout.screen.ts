@@ -1,7 +1,6 @@
+import { Product } from "../constants/products";
 import { CheckoutUser } from "../models/checkoutUser";
-import { ElementHelpers, enforceOrientation } from "../utils/helpers";
-import loginScreen from "./login.screen";
-import { TIMEOUTS } from "../constants/timeouts";
+import { ElementHelpers, enforceOrientation, fillField } from "../utils/helpers";
 
 class CheckoutScreen {
   cartIcon(count: number) {
@@ -43,9 +42,7 @@ class CheckoutScreen {
   }
 
   async proceedToCheckout() {
-    await ElementHelpers.scrollIfNeeded(this.checkoutButton);
-    await this.checkoutButton.waitForDisplayed({ timeout: TIMEOUTS.medium });
-    await this.checkoutButton.click();
+    await ElementHelpers.clickWithScroll(this.checkoutButton);
   }
 
   async fillCheckoutDetails(
@@ -53,29 +50,17 @@ class CheckoutScreen {
     lastName: string,
     zipCode: string
   ) {
-    await this.firstName.waitForExist();
-    await this.firstName.setValue(firstName);
-    await loginScreen.returnButton.click();
-
-    await this.lastName.waitForExist();
-    await this.lastName.setValue(lastName);
-    await loginScreen.returnButton.click();
-
-    await this.zipCode.waitForExist();
-    await this.zipCode.setValue(zipCode);
-    await loginScreen.returnButton.click();
+    await fillField(this.firstName, firstName);
+    await fillField(this.lastName, lastName);
+    await fillField(this.zipCode, zipCode);
   }
 
   async placeOrder() {
     await enforceOrientation();
-    await ElementHelpers.scrollIfNeeded(this.continueButton);
-    await this.continueButton.waitForExist();
-    await this.continueButton.click();
+    await ElementHelpers.clickWithScroll(this.continueButton);
 
     await enforceOrientation();
-    await ElementHelpers.scrollIfNeeded(this.finishButton);
-    await this.finishButton.waitForExist();
-    await this.finishButton.click();
+    await ElementHelpers.clickWithScroll(this.finishButton);
   }
 
   async verifyOrderSuccess() {
@@ -93,8 +78,7 @@ class CheckoutScreen {
   }
 
   async moveBackToHomeScreen() {
-    await ElementHelpers.scrollIfNeeded(this.backToHomeButton);
-    await this.backToHomeButton.click();
+    await ElementHelpers.clickWithScroll(this.backToHomeButton);
   }
 }
 

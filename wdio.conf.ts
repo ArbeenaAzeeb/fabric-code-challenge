@@ -295,17 +295,6 @@ export const config: WebdriverIO.Config = {
    * @param {boolean} result.passed    true if test has passed, otherwise false
    * @param {object}  result.retries   information about spec related retries, e.g. `{ attempts: 0, limit: 0 }`
    */
-  // beforeTest: async function (test) {
-  //     // Launch app fresh before every test
-  //     await driver.launchApp();
-  // },
-
-  // afterTest: async function(test, context, { error, result, duration, passed, retries }) {
-  //   if (!passed) {
-  //     const screenshot = await browser.takeScreenshot();
-  //     await allure.addAttachment('Screenshot', Buffer.from(screenshot, 'base64'), 'image/png');
-  //   }
-  // },
   afterTest: async function (
     test,
     context,
@@ -315,24 +304,34 @@ export const config: WebdriverIO.Config = {
       const screenshot = await browser.takeScreenshot();
       const allureResultsDir = path.join("allure-results");
 
-      // Ensure the directory exists
       if (!fs.existsSync(allureResultsDir)) {
         fs.mkdirSync(allureResultsDir, { recursive: true });
       }
 
-      // Use UID or title as filename (make it safe for filesystem)
-      const safeName = test.title.replace(/[^a-zA-Z0-9-_]/g, "_");
+      const safeName = AllureHelper.sanitizeName(test.title);
       const filePath = path.join(allureResultsDir, `${safeName}.png`);
 
-      // Save screenshot to disk
       fs.writeFileSync(filePath, Buffer.from(screenshot, "base64"));
 
-      // Attach to Allure using the saved file
       await allure.addAttachment(
         "Screenshot",
         fs.readFileSync(filePath),
         "image/png"
       );
+
+      try {
+        const logsDir = path.join(process.cwd(), "logs");
+        if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir, { recursive: true });
+
+        const logName = `${safeName}.txt`;
+        const logPath = path.join(logsDir, logName);
+        fs.writeFileSync(
+          logPath,
+          error?.stack || error?.message || "Unknown error"
+        );
+      } catch (err) {
+        console.error("Error saving error log:", err);
+      }
     }
   },
 

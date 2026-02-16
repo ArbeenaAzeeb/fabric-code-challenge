@@ -1,3 +1,4 @@
+import { TIMEOUTS } from "../constants/timeouts";
 import { testContext } from "../context/testContext";
 
 export async function enforceOrientation() {
@@ -61,4 +62,20 @@ export class ElementHelpers {
 
     return element;
   }
+
+  static async clickWithScroll(
+    element: ChainablePromiseElement
+  ) {
+    await this.scrollIfNeeded(element);
+    await element.waitForDisplayed({ timeout: TIMEOUTS.medium });
+    await element.click();
+  }
+}
+
+export async function fillField(element: ChainablePromiseElement, value: string) {
+  const returnButton = $("~Return");
+  await element.waitForExist();
+  await element.clearValue();
+  await element.setValue(value);
+  await returnButton.click();
 }

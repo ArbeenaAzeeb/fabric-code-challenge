@@ -33,11 +33,15 @@ export class MenuScreen {
     await enforceOrientation();
   }
 
+  async clickMenuItem(item: ChainablePromiseElement) {
+    await this.viewMenu();
+    await ElementHelpers.clickWithScroll(item);
+    await enforceOrientation();
+  }
+  
   async logout() {
-    if (testContext.orientation == "PORTRAIT") {
-      await this.viewMenu();
-      await ElementHelpers.scrollIfNeeded(this.logoutButton);
-      await this.logoutButton.click();
+    if (testContext.orientation === "PORTRAIT") {
+      await this.clickMenuItem(this.logoutButton);
     }
   }
 
@@ -57,7 +61,7 @@ export class MenuScreen {
       this.resetAppStateButton,
     ];
 
-    if (testContext.orientation == "PORTRAIT") {
+    if (testContext.orientation === "PORTRAIT") {
       await this.viewMenu();
       for (const el of elementsToCheck) {
         const visible = await this.isMenuItemVisible(el);

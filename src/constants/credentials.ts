@@ -1,22 +1,22 @@
 import { CheckoutUser } from "../models/checkoutUser";
 
-const Creds = {
+const LoginUserCredentials = {
   validUser: "standard_user",
   lockedUser: "locked_out_user",
   password: "secret_sauce",
 };
 
-export default Creds;
+export default LoginUserCredentials;
 
 export const CheckoutUserData = {
-  user1(): CheckoutUser {
+  jane(): CheckoutUser {
     return {
       firstName: "Jane",
       lastName: "Doe",
       zip: "123456",
     };
   },
-  user2(): CheckoutUser {
+  john(): CheckoutUser {
     return {
       firstName: "John",
       lastName: "Doe",

@@ -1,5 +1,5 @@
 import { TIMEOUTS } from "../constants/timeouts";
-import { enforceOrientation } from "../utils/helpers";
+import { ElementHelpers, enforceOrientation, fillField } from "../utils/helpers";
 
 class LoginScreen {
   get usernameInput() {
@@ -17,14 +17,11 @@ class LoginScreen {
   get invalidCredMessage() {
     return $("~Username and password do not match any user in this service.");
   }
-  get returnButton() {
-    return $("~Return");
-  }
 
   async login(username: string, password: string) {
     await this.enterUserName(username);
     await this.enterPassword(password);
-    await this.loginButton.click();
+    await ElementHelpers.clickWithScroll(this.loginButton);
     await enforceOrientation();
   }
 
@@ -33,14 +30,11 @@ class LoginScreen {
       timeout: TIMEOUTS.long,
       timeoutMsg: "Username input not displayed",
     });
-    await this.usernameInput.clearValue();
-    await this.usernameInput.setValue(username);
-    await this.returnButton.click();
+    await fillField(this.usernameInput, username);
   }
 
   async enterPassword(password: string) {
-    await this.passwordInput.setValue(password);
-    await this.returnButton.click();
+    await fillField(this.passwordInput, password);
   }
 }
 

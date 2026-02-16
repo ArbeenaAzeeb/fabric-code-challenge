@@ -1,9 +1,29 @@
-const Items = {
-  backpack: "Sauce Labs Backpack",
-  bikeLight: "Sauce Labs Bike Light",
-  tShirt: "Sauce Labs Bolt T-Shirt",
-  jacket: "Sauce Labs Fleece Jacket",
-  onesie: "Sauce Labs Onesie",
+export type Product = {
+  name: string;
+  price: number;
 };
 
-export default Items;
+export const Products: Record<string, Product> = {
+  backpack: {
+    name: 'Sauce Labs Backpack',
+    price: 29.99,
+  },
+  bikeLight: {
+    name: 'Sauce Labs Bike Light',
+    price: 9.99,
+  },
+  tShirt: {
+    name: 'Sauce Labs Bolt T-Shirt',
+    price: 15.99,
+  },
+  jacket: {
+    name: 'Sauce Labs Fleece Jacket',
+    price: 49.99,
+  },
+  onesie: {
+    name: 'Sauce Labs Onesie',
+    price: 7.99,
+  },
+};
+
+export default Products;

@@ -1,13 +1,15 @@
-import Creds, { CheckoutUserData } from "../../../constants/credentials";
-import Items from "../../../constants/products";
+import LoginUserCredentials, {
+  CheckoutUserData,
+} from "../../../constants/credentials";
+import Products from "../../../constants/products";
 import CheckoutScreen from "../../../screens/checkout.screen";
 import LoginScreen from "../../../screens/login.screen";
-import HomeScreen from "../../../screens/home.screen";
+import ProductScreen from "../../../screens/product.screen";
 import MenuScreen from "../../../screens/menu.screen";
 import { ORIENTATIONS } from "../../../constants/orientation";
 import { enforceOrientation } from "../../../utils/helpers";
 import { testContext } from "../../../context/testContext";
-import { AllureHelper } from "../../../utils/allurehelper";
+import AllureHelper from "../../../utils/allurehelper";
 
 for (const orientation of ORIENTATIONS) {
   describe(`Shopping Flow in ${orientation}`, () => {
@@ -16,18 +18,22 @@ for (const orientation of ORIENTATIONS) {
       await enforceOrientation();
     });
 
-    it("should select multiple products and add to cart", async () => {
-      const products = [Items.tShirt, Items.jacket];
-      const checkoutUser = CheckoutUserData.user1();
+    it("should be able to place an order for multiple products", async () => {
+      const productsToBuy = [Products.backpack, Products.bikeLight];
+      const checkoutUser = CheckoutUserData.jane();
 
       AllureHelper.step("Login with valid credentials");
-      await LoginScreen.login(Creds.validUser, Creds.password);
+      await LoginScreen.login(
+        LoginUserCredentials.validUser,
+        LoginUserCredentials.password
+      );
 
       AllureHelper.step("Add multiple products to cart");
-      await HomeScreen.addProductsToCart(products);
+      await ProductScreen.viewProductsInListView();
+      await ProductScreen.addProductsToCart(productsToBuy);
 
       AllureHelper.step("Place an order");
-      await CheckoutScreen.completeCheckout(checkoutUser, products.length);
+      await CheckoutScreen.completeCheckout(checkoutUser, productsToBuy.length);
 
       AllureHelper.step("Verify menu options and logout");
       await MenuScreen.validateMenuItems();

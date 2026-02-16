@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "wdio run wdio.conf.ts",
-    "allure:clean": "rm -rf allure-results allure-report",
+    "allure:clean": "rm -rf allure-results allure-report logs",
     "allure:generate": "allure generate allure-results --clean",
     "allure:open": "allure open allure-report",
     "test:allure": "npm run allure:clean && npm run test || true && npm run allure:generate"

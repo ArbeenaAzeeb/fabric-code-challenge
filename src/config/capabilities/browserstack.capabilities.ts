@@ -8,7 +8,7 @@ export const iosBrowserStack = [
 
     "bstack:options": {
       projectName: "Fabric Code Challenge",
-      buildName: `Build-${process.env.GITHUB_RUN_NUMBER || "local"}`,
+      buildName: `Build-${process.env.GITHUB_RUN_NUMBER}`,
       sessionName: "iOS Appium Tests",
       debug: true,
       networkLogs: true,
