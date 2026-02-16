@@ -340,7 +340,8 @@ export const config: WebdriverIO.Config = {
       console.log("Reading test summary...");
       const summary = AllureHelper.getTestSummary();
       console.log("SUMMARY:", summary);
-    
+      console.log(process.env.USER_EMAIL)
+      console.log(process.env.USER_PASS)
       console.log("Sending email...");
       await EmailHelper.sendTestReport();
     }

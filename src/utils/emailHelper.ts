@@ -21,11 +21,11 @@ console.log("pass: ",process.env.USER_PASS)
     });
 
     const html = `
-      <h2>📊 Automated Test Report</h2>
+      <h2>👩🏻‍💻 Automated Test Report</h2>
       <p><strong>Total:</strong> ${summary.total}</p>
       <p><strong>Passed:</strong> ✅ ${summary.passed}</p>
       <p><strong>Failed:</strong> ❌ ${summary.failed}</p>
-      <p><strong>Skipped:</strong> ❌ ${summary.skipped}</p>
+      <p><strong>Skipped:</strong> ⚠️ ${summary.skipped}</p>
 
       ${
         summary.failedTests.length > 0
