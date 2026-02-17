@@ -2,7 +2,7 @@ name: Mobile Automation Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
 
 jobs:
@@ -28,5 +28,8 @@ jobs:
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
           BS_APP_ID: ${{ secrets.BS_APP_ID }}
           USER_EMAIL: ${{ secrets.USER_EMAIL }}
-          USER_PASS: ${{ secrets.USER_PASS }}
+          USER_EMAIL_PASS: ${{ secrets.USER_EMAIL_PASS }}
+          STANDARD_USER: ${{ secrets.STANDARD_USER }}
+          LOCKED_USER: ${{ secrets.LOCKED_USER }}
+          USER_PASSWORD: ${{ secrets.USER_PASSWORD }}
         run: npm run test:allure

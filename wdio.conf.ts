@@ -1,14 +1,14 @@
-import { iosCapabilities } from "./src/config/capabilities/ios.capabilities";
-import { iosBrowserStack } from "./src/config/capabilities/browserstack.capabilities";
-import allure from "@wdio/allure-reporter";
-import "dotenv/config";
-import { AllureHelper } from "./src/utils/allurehelper";
-import { execSync } from "child_process";
-import { EmailHelper } from "./src/utils/emailHelper";
-import path = require("path");
-import * as fs from "fs";
+import { iosCapabilities } from './src/config/capabilities/ios.capabilities';
+import { iosBrowserStack } from './src/config/capabilities/browserstack.capabilities';
+import allure from '@wdio/allure-reporter';
+import 'dotenv/config';
+import { AllureHelper } from './src/utils/allurehelper';
+import { execSync } from 'child_process';
+import { EmailHelper } from './src/utils/emailHelper';
+import path = require('path');
+import * as fs from 'fs';
 
-const runEnv = process.env.RUN_ENV || "local";
+const runEnv = process.env.RUN_ENV || 'local';
 
 let capabilities;
 let hostname;
@@ -18,20 +18,20 @@ let key;
 let port;
 let protocol;
 
-if (runEnv === "browserstack") {
+if (runEnv === 'browserstack') {
   capabilities = iosBrowserStack;
-  services = ["browserstack"];
+  services = ['browserstack'];
   user = process.env.BROWSERSTACK_USERNAME;
   key = process.env.BROWSERSTACK_ACCESS_KEY;
-  hostname = "hub-cloud.browserstack.com";
+  hostname = 'hub-cloud.browserstack.com';
   port = 443;
-  protocol = "https";
+  protocol = 'https';
 } else {
   capabilities = iosCapabilities;
-  hostname = "127.0.0.1";
-  services = ["appium"];
+  hostname = '127.0.0.1';
+  services = ['appium'];
   port = 4723;
-  protocol = "http";
+  protocol = 'http';
 }
 
 // if (runEnv === 'browserstack') {
@@ -57,15 +57,15 @@ export const config: WebdriverIO.Config = {
   key,
   hostname,
   protocol,
-  path: "/wd/hub",
+  path: '/wd/hub',
   port,
   //
   // ====================
   // Runner Configuration
   // ====================
   // WebdriverIO supports running e2e tests as well as unit and component tests.
-  runner: "local",
-  tsConfigPath: "./tsconfig.json",
+  runner: 'local',
+  tsConfigPath: './tsconfig.json',
 
   //
   // ==================
@@ -82,7 +82,7 @@ export const config: WebdriverIO.Config = {
   // The path of the spec files will be resolved relative from the directory of
   // of the config file unless it's absolute.
   //
-  specs: ["./src/tests/**/*.spec.ts"],
+  specs: ['./src/tests/**/*.spec.ts'],
 
   // Patterns to exclude.
   exclude: [
@@ -119,7 +119,7 @@ export const config: WebdriverIO.Config = {
   // Define all options that are relevant for the WebdriverIO instance here
   //
   // Level of logging verbosity: trace | debug | info | warn | error | silent
-  logLevel: "info",
+  logLevel: 'info',
   //
   // Set specific log levels per logger
   // loggers:
@@ -167,7 +167,7 @@ export const config: WebdriverIO.Config = {
   //
   // Make sure you have the wdio adapter package for the specific framework installed
   // before running any tests.
-  framework: "mocha",
+  framework: 'mocha',
 
   //
   // The number of times to retry the entire specfile when it fails as a whole
@@ -183,11 +183,11 @@ export const config: WebdriverIO.Config = {
   // The only one supported by default is 'dot'
   // see also: https://webdriver.io/docs/dot-reporter
   reporters: [
-    "spec",
+    'spec',
     [
-      "allure",
+      'allure',
       {
-        outputDir: "allure-results",
+        outputDir: 'allure-results',
         disableWebdriverStepsReporting: false,
         disableWebdriverScreenshotsReporting: false,
       },
@@ -197,7 +197,7 @@ export const config: WebdriverIO.Config = {
   // Options to be passed to Mocha.
   // See the full list at http://mochajs.org/
   mochaOpts: {
-    ui: "bdd",
+    ui: 'bdd',
     timeout: 180000,
   },
 
@@ -295,14 +295,10 @@ export const config: WebdriverIO.Config = {
    * @param {boolean} result.passed    true if test has passed, otherwise false
    * @param {object}  result.retries   information about spec related retries, e.g. `{ attempts: 0, limit: 0 }`
    */
-  afterTest: async function (
-    test,
-    context,
-    { error, result, duration, passed, retries }
-  ) {
+  afterTest: async function (test, context, { error, result, duration, passed, retries }) {
     if (!passed) {
       const screenshot = await browser.takeScreenshot();
-      const allureResultsDir = path.join("allure-results");
+      const allureResultsDir = path.join('allure-results');
 
       if (!fs.existsSync(allureResultsDir)) {
         fs.mkdirSync(allureResultsDir, { recursive: true });
@@ -311,40 +307,33 @@ export const config: WebdriverIO.Config = {
       const safeName = AllureHelper.sanitizeName(test.title);
       const filePath = path.join(allureResultsDir, `${safeName}.png`);
 
-      fs.writeFileSync(filePath, Buffer.from(screenshot, "base64"));
+      fs.writeFileSync(filePath, Buffer.from(screenshot, 'base64'));
 
-      await allure.addAttachment(
-        "Screenshot",
-        fs.readFileSync(filePath),
-        "image/png"
-      );
+      await allure.addAttachment('Screenshot', fs.readFileSync(filePath), 'image/png');
 
       try {
-        const logsDir = path.join(process.cwd(), "logs");
+        const logsDir = path.join(process.cwd(), 'logs');
         if (!fs.existsSync(logsDir)) fs.mkdirSync(logsDir, { recursive: true });
 
         const logName = `${safeName}.txt`;
         const logPath = path.join(logsDir, logName);
-        fs.writeFileSync(
-          logPath,
-          error?.stack || error?.message || "Unknown error"
-        );
+        fs.writeFileSync(logPath, error?.stack || error?.message || 'Unknown error');
       } catch (err) {
-        console.error("Error saving error log:", err);
+        console.error('Error saving error log:', err);
       }
     }
   },
 
   onComplete: async () => {
-    console.log("📦 Generating Allure report...");
-    execSync("npx allure generate allure-results --clean -o allure-report", {
-      stdio: "inherit",
+    console.log('📦 Generating Allure report...');
+    execSync('npx allure generate allure-results --clean -o allure-report', {
+      stdio: 'inherit',
     });
-    console.log("Reading test summary...");
+    console.log('Reading test summary...');
     const summary = AllureHelper.getTestSummary();
-    console.log("SUMMARY:", summary);
-    console.log("Sending email...");
-    await EmailHelper.sendTestReport();
+    console.log('SUMMARY:', summary);
+    console.log('Sending email...');
+    await EmailHelper.sendTestReport(summary);
   },
 
   /**

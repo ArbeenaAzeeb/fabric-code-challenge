@@ -1,5 +1,5 @@
-import { TIMEOUTS } from "../constants/timeouts";
-import { testContext } from "../context/testContext";
+import { TIMEOUTS } from '../constants/timeouts';
+import { testContext } from '../context/testContext';
 
 export async function enforceOrientation() {
   const orientation = testContext.orientation;
@@ -10,14 +10,11 @@ export async function enforceOrientation() {
 }
 
 export class ElementHelpers {
-  static async scrollIfNeeded(
-    element: ChainablePromiseElement,
-    maxAttempts = 30
-  ) {
+  static async scrollIfNeeded(element: ChainablePromiseElement, maxAttempts = 30) {
     await element.waitForExist({ timeout: 5000 });
 
     let attempts = 0;
-    const isBrowserStack = process.env.RUN_ENV === "browserstack";
+    const isBrowserStack = process.env.RUN_ENV === 'browserstack';
 
     const { width, height } = await driver.getWindowRect();
 
@@ -30,20 +27,16 @@ export class ElementHelpers {
 
       if (needsScrollUp || needsScrollDown) {
         if (isBrowserStack) {
-          await driver.execute("mobile: swipe", {
-            direction: needsScrollUp ? "up" : "down",
+          await driver.execute('mobile: swipe', {
+            direction: needsScrollUp ? 'up' : 'down',
             velocity: 300,
           });
         } else {
-          await driver.execute("mobile: dragFromToForDuration", {
+          await driver.execute('mobile: dragFromToForDuration', {
             fromX: Math.floor(width * 0.5),
-            fromY: needsScrollUp
-              ? Math.floor(height * 0.7)
-              : Math.floor(height * 0.3),
+            fromY: needsScrollUp ? Math.floor(height * 0.7) : Math.floor(height * 0.3),
             toX: Math.floor(width * 0.5),
-            toY: needsScrollUp
-              ? Math.floor(height * 0.6)
-              : Math.floor(height * 0.4),
+            toY: needsScrollUp ? Math.floor(height * 0.6) : Math.floor(height * 0.4),
             duration: 0.2,
           });
         }
@@ -57,15 +50,13 @@ export class ElementHelpers {
     }
 
     if (!(await element.isDisplayed())) {
-      throw new Error("Element not found after scrolling");
+      throw new Error('Element not found after scrolling');
     }
 
     return element;
   }
 
-  static async clickWithScroll(
-    element: ChainablePromiseElement
-  ) {
+  static async clickWithScroll(element: ChainablePromiseElement) {
     await this.scrollIfNeeded(element);
     await element.waitForDisplayed({ timeout: TIMEOUTS.medium });
     await element.click();
@@ -73,7 +64,7 @@ export class ElementHelpers {
 }
 
 export async function fillField(element: ChainablePromiseElement, value: string) {
-  const returnButton = $("~Return");
+  const returnButton = $('~Return');
   await element.waitForExist();
   await element.clearValue();
   await element.setValue(value);

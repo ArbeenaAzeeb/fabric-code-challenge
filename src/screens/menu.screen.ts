@@ -1,30 +1,30 @@
-import { testContext } from "../context/testContext";
-import { ElementHelpers, enforceOrientation } from "../utils/helpers";
+import { testContext } from '../context/testContext';
+import { ElementHelpers, enforceOrientation } from '../utils/helpers';
 
 export class MenuScreen {
   get menuButton() {
-    return $("~test-Menu");
+    return $('~test-Menu');
   }
   get logoutButton() {
-    return $("~test-LOGOUT");
+    return $('~test-LOGOUT');
   }
   get allItemsButton() {
-    return $("~test-ALL ITEMS");
+    return $('~test-ALL ITEMS');
   }
   get qrScannerButton() {
-    return $("~test-QR CODE SCANNER");
+    return $('~test-QR CODE SCANNER');
   }
   get geoLocationButton() {
-    return $("~test-GEO LOCATION");
+    return $('~test-GEO LOCATION');
   }
   get drawingButton() {
-    return $("~test-DRAWING");
+    return $('~test-DRAWING');
   }
   get aboutButton() {
-    return $("~test-ABOUT");
+    return $('~test-ABOUT');
   }
   get resetAppStateButton() {
-    return $("~test-RESET APP STATE");
+    return $('~test-RESET APP STATE');
   }
 
   async viewMenu() {
@@ -38,9 +38,9 @@ export class MenuScreen {
     await ElementHelpers.clickWithScroll(item);
     await enforceOrientation();
   }
-  
+
   async logout() {
-    if (testContext.orientation === "PORTRAIT") {
+    if (testContext.orientation === 'PORTRAIT') {
       await this.clickMenuItem(this.logoutButton);
     }
   }
@@ -61,7 +61,7 @@ export class MenuScreen {
       this.resetAppStateButton,
     ];
 
-    if (testContext.orientation === "PORTRAIT") {
+    if (testContext.orientation === 'PORTRAIT') {
       await this.viewMenu();
       for (const el of elementsToCheck) {
         const visible = await this.isMenuItemVisible(el);

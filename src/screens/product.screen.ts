@@ -1,27 +1,25 @@
-import { Product } from "../constants/products";
-import { TIMEOUTS } from "../constants/timeouts";
-import { ElementHelpers } from "../utils/helpers";
+import { Product } from '../constants/products';
+import { TIMEOUTS } from '../constants/timeouts';
+import { ElementHelpers } from '../utils/helpers';
 
 export class ProductScreen {
   get title() {
-    return $("~test-PRODUCTS");
+    return $('~test-PRODUCTS');
   }
   get addToCartButton() {
-    return $("~test-ADD TO CART");
+    return $('~test-ADD TO CART');
   }
   get productPrice() {
-    return $("~test-Price");
+    return $('~test-Price');
   }
   get backToProducts() {
-    return $("~test-BACK TO PRODUCTS");
+    return $('~test-BACK TO PRODUCTS');
   }
   get toggleView() {
-    return $("~test-Toggle");
+    return $('~test-Toggle');
   }
   productByName(itemLabel: string) {
-    return $(
-      `//XCUIElementTypeStaticText[@name="test-Item title" and @label="${itemLabel}"]`
-    );
+    return $(`//XCUIElementTypeStaticText[@name="test-Item title" and @label="${itemLabel}"]`);
   }
 
   async selectProductByName(itemLabel: string) {
@@ -36,7 +34,7 @@ export class ProductScreen {
   async checkProductRate(expectedPrice: number) {
     await this.productPrice.waitForDisplayed({ timeout: TIMEOUTS.medium });
     const priceText = await this.productPrice.getText();
-    const actualPrice = Number(priceText.replace("$", ""));
+    const actualPrice = Number(priceText.replace('$', '').trim());
     expect(actualPrice).toBe(expectedPrice);
   }
 
@@ -60,6 +58,10 @@ export class ProductScreen {
 
   async viewProductsInListView() {
     await this.toggleView.click();
+  }
+
+  async verifyProductsPage() {
+    await expect(this.title).toBeDisplayed();
   }
 }
 export default new ProductScreen();
