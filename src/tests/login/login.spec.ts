@@ -8,7 +8,7 @@ import AllureHelper from '../../utils/allurehelper';
 import { ENV } from '../../config/env';
 
 for (const orientation of ORIENTATIONS) {
-  describe(`Login Flow in ${orientation}`, () => {
+  describe(`Login flow in ${orientation}`, () => {
     before(async () => {
       testContext.orientation = orientation;
       await enforceOrientation();

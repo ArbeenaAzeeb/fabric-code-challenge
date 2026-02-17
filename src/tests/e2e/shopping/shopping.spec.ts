@@ -11,7 +11,7 @@ import AllureHelper from '../../../utils/allurehelper';
 import { ENV } from '../../../config/env';
 
 for (const orientation of ORIENTATIONS) {
-  describe(`Shopping Flow in ${orientation}`, () => {
+  describe(`Shopping flow in ${orientation}`, () => {
     before(async () => {
       testContext.orientation = orientation;
       await enforceOrientation();
