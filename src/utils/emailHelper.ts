@@ -31,9 +31,26 @@ export class EmailHelper {
         });
       }
     });
+    summary.flakyTests.forEach((f) => {
+      if (fs.existsSync(f.screenshot)) {
+        attachments.push({
+          filename: path.basename(f.screenshot),
+          path: f.screenshot,
+          cid: path.basename(f.screenshot),
+        });
+      }
+    });
 
     // Error logs
     summary.failedTests.forEach((f) => {
+      if (fs.existsSync(f.logs)) {
+        attachments.push({
+          filename: path.basename(f.logs),
+          path: f.logs,
+        });
+      }
+    });
+    summary.flakyTests.forEach((f) => {
       if (fs.existsSync(f.logs)) {
         attachments.push({
           filename: path.basename(f.logs),
@@ -47,8 +64,22 @@ export class EmailHelper {
         <p><strong>Total:</strong> ${summary.total}</p>
         <p><strong>Passed:</strong> ✅ ${summary.passed}</p>
         <p><strong>Failed:</strong> ❌ ${summary.failed}</p>
-        <p><strong>Skipped:</strong> ⚠️ ${summary.skipped}</p>
+        <p><strong>Skipped:</strong> ⛔️ ${summary.skipped}</p>
+        <p><strong>Flaky:</strong> ⚠️ ${summary.flaky}</p>
   
+        ${
+          summary.flakyTests.length > 0
+            ? `
+              <h3>⚠️ Details of Flaky / Retried Tests</h3>
+              <ul>
+                ${summary.flakyTests
+                  .map((f) => `<li>${f.name} (retried ${f.retries} times)</li>`)
+                  .join('')}
+              </ul>
+            `
+            : '<p>🎉 No flaky tests</p>'
+        }
+          
         ${
           summary.failedTests.length > 0
             ? `
