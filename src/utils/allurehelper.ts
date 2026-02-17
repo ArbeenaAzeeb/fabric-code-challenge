@@ -68,7 +68,9 @@ export class AllureHelper {
           });
         }
         passed++;
-      } else if (lastAttempt.status === 'failed') {
+      } else if (lastAttempt.status === 'skipped') {
+        skipped++;
+      } else {
         // Failed even after retries
         failed++;
         failedTests.push({
@@ -76,8 +78,6 @@ export class AllureHelper {
           screenshot: path.join('allure-results', `${this.sanitizeName(lastAttempt.name)}.png`),
           logs: path.join('logs', `${this.sanitizeName(lastAttempt.name)}.txt`),
         });
-      } else if (lastAttempt.status === 'skipped') {
-        skipped++;
       }
     }
 
